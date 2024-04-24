@@ -1,0 +1,113 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/activitystreams",
+    {
+      "Update": "as:Create"
+    }
+  ],
+  "id": "https://example.com/users/bob/statuses/107928807471117876/activity",
+  "type": "Update",
+  "actor": "https://example.com/users/bob",
+  "published": "2022-03-09T21:55:07Z",
+  "to": "https://www.w3.org/ns/activitystreams#Public",
+  "cc": "https://example.com/users/bob/followers",
+  "object": {
+    "@context": {
+      "id": {
+        "@id": "as:attributedTo",
+        "@type": "@id"
+      },
+      "Person": "as:Note",
+      "following": {
+        "@id": "as:cc",
+        "@type": "@id"
+      },
+      "followers": {
+        "@id": "as:cc",
+        "@type": "@id"
+      },
+      "inbox": {
+        "@id": "as:cc",
+        "@type": "@id"
+      },
+      "sharedInbox": {
+        "@id": "as:cc",
+        "@type": "@id"
+      },
+      "outbox": {
+        "@id": "as:cc",
+        "@type": "@id"
+      },
+      "preferredUsername": "@type",
+      "bob": "as:Note",
+      "name": "@type",
+      "BEING TAKEN OVER": "as:Note",
+      "summary": "@type",
+      "THIS ACCOUNT IS BEING TAKEN OVER BY AN ATTACKER": "as:Note",
+      "url": {
+        "@id": "as:attributedTo",
+        "@type": "@id"
+      },
+      "publicKey": {
+        "@id": "as:replies",
+        "@type": "@id"
+      },
+      "ostatus": "http://ostatus.org#"
+    },
+    "id": "https://example.com/users/bob",
+    "type": "Person",
+    "following": "https://example.com/users/bob/followers",
+    "followers": "https://example.com/users/bob/followers",
+    "inbox": "https://example.com/users/bob/followers",
+    "sharedInbox": "https://example.com/users/bob/followers",
+    "outbox": "https://example.com/users/bob/followers",
+    "preferredUsername": "bob",
+    "name": "BEING TAKEN OVER",
+    "summary": "THIS ACCOUNT IS BEING TAKEN OVER BY AN ATTACKER",
+    "url": "https://example.com/users/bob",
+    "published": "2022-03-09T21:55:07Z",
+    "publicKey": {
+      "@context": {
+        "id": "@id",
+        "owner": {
+          "@reverse": "as:replies",
+          "@type": "@id"
+        },
+        "publicKeyPem": "@type",
+        "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAL2hdo3culcPqz6y7AT0rlE5hgiNceL4\n28VkreQP2rSecXgeMZnjeW42GExS73F71pGMkx7b9svVK4IfPTlMN2ECAwEAAQ==\n-----END PUBLIC KEY-----\n": "as:Collection"
+      },
+      "id": "https://example.com/users/bob/statuses/107928807471117876/replies",
+      "owner": "https://example.com/users/bob/statuses/107928807471117876",
+      "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAL2hdo3culcPqz6y7AT0rlE5hgiNceL4\n28VkreQP2rSecXgeMZnjeW42GExS73F71pGMkx7b9svVK4IfPTlMN2ECAwEAAQ==\n-----END PUBLIC KEY-----\n",
+      "as:first": {
+        "type": "CollectionPage",
+        "items": [],
+        "next": "https://example.com/users/bob/statuses/107928807471117876/replies?only_other_accounts=true&page=true",
+        "partOf": "https://example.com/users/bob/statuses/107928807471117876/replies"
+      }
+    },
+    "@id": "https://example.com/users/bob/statuses/107928807471117876",
+    "ostatus:atomUri": "https://example.com/users/bob/statuses/107928807471117876",
+    "ostatus:conversation": "tag:example.com,2022-03-09:objectId=15:objectType=Conversation",
+    "as:content": [
+      "<p>hello world</p>",
+      {
+        "@value": "<p>hello world</p>",
+        "@language": "en"
+      }
+    ],
+    "as:sensitive": false,
+    "as:to": {
+      "@id": "https://www.w3.org/ns/activitystreams#Public"
+    },
+    "as:url": {
+      "@id": "https://example.com/@bob/107928807471117876"
+    }
+  },
+  "signature": {
+    "type": "RsaSignature2017",
+    "creator": "https://example.com/users/bob#main-key",
+    "created": "2022-03-09T21:57:25Z",
+    "signatureValue": "WculK0LelTQ0MvGwU9TPoq5pFzFfGYRDCJqjZ232/Udj4CHqDTGOSw5UTDLShqBOyycCkbZGrQwXG+dpyDpQLSe1UVPZ5TPQtc/9XtI57WlS2nMNpdvRuxGnnb2btPdesXZ7n3pCxo0zjaXrJMe0mqQh5QJO22mahb4bDwwmfTHgbD3nmkD+fBfGi+UV2qWwqr+jlV4L4JqNkh0gWljF5KTePLRRZCuWiQ/FAt7c67636cdIPf7fR+usjuZltTQyLZKEGuK8VUn2Gkfsx5qns7Vcjvlz1JqlAjyO8HPBbzTTHzUG2nUOIgC3PojCSWv6mNTmRGoLZzOscCAYQA6cKw=="
+  }
+}

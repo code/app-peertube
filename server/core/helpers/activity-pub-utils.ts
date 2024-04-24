@@ -1,9 +1,9 @@
 import { ContextType } from '@peertube/peertube-models'
 import { ACTIVITY_PUB, REMOTE_SCHEME } from '@server/initializers/constants.js'
+import { isArray } from './custom-validators/misc.js'
 import { buildDigest } from './peertube-crypto.js'
 import type { signJsonLDObject } from './peertube-jsonld.js'
 import { doJSONRequest } from './requests.js'
-import { isArray } from './custom-validators/misc.js'
 
 export type ContextFilter = <T> (arg: T) => Promise<T>
 
@@ -233,11 +233,61 @@ const contextStore: { [ id in ContextType ]: (string | { [ id: string ]: string 
   Rate: buildContext(),
 
   Chapters: buildContext({
-    name: 'sc:name',
     hasPart: 'sc:hasPart',
     endOffset: 'sc:endOffset',
     startOffset: 'sc:startOffset'
   })
+}
+
+let allContext: (string | ContextValue)[]
+export function getAllContext () {
+  if (allContext) return allContext
+
+  const processed = new Set<string>()
+  allContext = []
+
+  for (const v of Object.values(contextStore)) {
+    for (const item of v) {
+      if (typeof item === 'string') {
+        if (!processed.has(item)) {
+          allContext.push(item)
+        }
+
+        processed.add(item)
+      } else {
+        for (const subKey of Object.keys(item)) {
+          if (!processed.has(subKey)) {
+            allContext.push({ [subKey]: item[subKey] })
+          }
+
+          processed.add(subKey)
+        }
+      }
+    }
+  }
+
+  // FIXME: replace uuid context with this value in global context
+  allContext = allContext.concat([
+    {
+      uuid: {
+        '@type': 'sc:identifier',
+        '@id': 'pt:uuid'
+      }
+    },
+    {
+      endTimestamp: {
+        '@type': 'sc:Number',
+        '@id': 'pt:endTimestamp'
+      },
+      actionStatus: 'sc:actionStatus',
+      watchSections: {
+        '@type': '@id',
+        '@id': 'pt:watchSections'
+      }
+    }
+  ])
+
+  return allContext
 }
 
 async function getContextData (type: ContextType, contextFilter: ContextFilter) {

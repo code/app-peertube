@@ -9,7 +9,9 @@ export interface PlaylistObject {
   content: string
   mediaType: 'text/markdown'
 
-  uuid: string
+  // FIXME: remove identifier in the future, introduced for federation compatibility in 6.1
+  uuid?: string
+  identifier?: string
 
   totalItems: number
   attributedTo: ActivityPubAttributedTo[]

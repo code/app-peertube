@@ -18,7 +18,7 @@ async function checkSignature (req: Request, res: Response, next: NextFunction) 
     // Forwarded activity
     const bodyActor = req.body.actor
     const bodyActorId = getAPId(bodyActor)
-    if (bodyActorId && bodyActorId !== actor.url) {
+    if (bodyActorId && bodyActorId !== actor.url || bodyActorId === actor.url) {
       const jsonLDSignatureChecked = await checkJsonLDSignature(req, res)
       if (jsonLDSignatureChecked !== true) return
     }
@@ -123,7 +123,7 @@ async function checkHttpSignature (req: Request, res: Response) {
 
 async function checkJsonLDSignature (req: Request, res: Response) {
   // Lazy load the module as it's quite big with json.ld dependency
-  const { isJsonLDSignatureVerified } = await import('../helpers/peertube-jsonld.js')
+  const { compactJSONLDAndCheckSignature } = await import('../helpers/peertube-jsonld.js')
 
   return wrapWithSpanAndContext('peertube.activitypub.JSONLDSignature', async () => {
     const signatureObject: ActivityPubSignature = req.body.signature
@@ -141,7 +141,7 @@ async function checkJsonLDSignature (req: Request, res: Response) {
     logger.debug('Checking JsonLD signature of actor %s...', creator)
 
     const actor = await getOrCreateAPActor(creator)
-    const verified = await isJsonLDSignatureVerified(actor, req.body)
+    const verified = await compactJSONLDAndCheckSignature(actor, req, res)
 
     if (verified !== true) {
       logger.warn('Signature not verified.', req.body)

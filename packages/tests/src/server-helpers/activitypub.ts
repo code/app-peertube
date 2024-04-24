@@ -3,7 +3,7 @@
 import { buildAbsoluteFixturePath } from '@peertube/peertube-node-utils'
 import { signAndContextify } from '@peertube/peertube-server/core/helpers/activity-pub-utils.js'
 import { isHTTPSignatureVerified, parseHTTPSignature } from '@peertube/peertube-server/core/helpers/peertube-crypto.js'
-import { isJsonLDSignatureVerified, signJsonLDObject } from '@peertube/peertube-server/core/helpers/peertube-jsonld.js'
+import { compactJSONLDAndCheckSignature, signJsonLDObject } from '@peertube/peertube-server/core/helpers/peertube-jsonld.js'
 import { expect } from 'chai'
 import { readJsonSync } from 'fs-extra/esm'
 import cloneDeep from 'lodash-es/cloneDeep.js'
@@ -24,6 +24,14 @@ function fakeFilter () {
   return (data: any) => Promise.resolve(data)
 }
 
+function fakeExpressReq (body: any) {
+  return { body, locals: { bodyBeforeJSONLDCompaction: {} as any } }
+}
+
+function fakeExpressRes () {
+  return { locals: { bodyBeforeJSONLDCompaction: {} as any } }
+}
+
 describe('Test activity pub helpers', function () {
 
   describe('When checking the Linked Signature', function () {
@@ -33,7 +41,7 @@ describe('Test activity pub helpers', function () {
       const publicKey = readJsonSync(buildAbsoluteFixturePath('./ap-json/mastodon/public-key.json')).publicKey
       const fromActor = { publicKey, url: 'http://localhost:9002/accounts/peertube' }
 
-      const result = await isJsonLDSignatureVerified(fromActor as any, body)
+      const result = await compactJSONLDAndCheckSignature(fromActor as any, fakeExpressReq(body), fakeExpressRes())
 
       expect(result).to.be.false
     })
@@ -43,7 +51,7 @@ describe('Test activity pub helpers', function () {
       const publicKey = readJsonSync(buildAbsoluteFixturePath('./ap-json/mastodon/bad-public-key.json')).publicKey
       const fromActor = { publicKey, url: 'http://localhost:9002/accounts/peertube' }
 
-      const result = await isJsonLDSignatureVerified(fromActor as any, body)
+      const result = await compactJSONLDAndCheckSignature(fromActor as any, fakeExpressReq(body), fakeExpressRes())
 
       expect(result).to.be.false
     })
@@ -53,7 +61,7 @@ describe('Test activity pub helpers', function () {
       const publicKey = readJsonSync(buildAbsoluteFixturePath('./ap-json/mastodon/public-key.json')).publicKey
       const fromActor = { publicKey, url: 'http://localhost:9002/accounts/peertube' }
 
-      const result = await isJsonLDSignatureVerified(fromActor as any, body)
+      const result = await compactJSONLDAndCheckSignature(fromActor as any, fakeExpressReq(body), fakeExpressRes())
 
       expect(result).to.be.true
     })
@@ -72,9 +80,25 @@ describe('Test activity pub helpers', function () {
       })
 
       const fromActor = { publicKey: keys.publicKey, url: 'http://localhost:9002/accounts/peertube' }
-      const result = await isJsonLDSignatureVerified(fromActor as any, signedBody)
+      const result = await compactJSONLDAndCheckSignature(fromActor as any, fakeExpressReq(signedBody), fakeExpressRes())
 
       expect(result).to.be.false
+    })
+
+    it('Should compact JSONLD input when checking JSONLD signature', async function () {
+      const keys = readJsonSync(buildAbsoluteFixturePath('./ap-json/peertube/keys-updated.json'))
+      const signedBody = readJsonSync(buildAbsoluteFixturePath('./ap-json/peertube/announce-updated.json'))
+
+      const fromActor = { publicKey: keys.publicKey }
+      const req = { body: signedBody }
+      const res = { locals: { bodyBeforeJSONLDCompaction: null } }
+      const result = await compactJSONLDAndCheckSignature(fromActor as any, req, res)
+
+      expect(res.locals.bodyBeforeJSONLDCompaction).to.equal(signedBody)
+      expect(res.locals.bodyBeforeJSONLDCompaction).to.deep.equal(signedBody)
+      expect(req.body.type).to.equal('Create')
+
+      expect(result).to.be.true
     })
 
     it('Should succeed with a valid PeerTube signature', async function () {
@@ -91,7 +115,7 @@ describe('Test activity pub helpers', function () {
       })
 
       const fromActor = { publicKey: keys.publicKey, url: 'http://localhost:9002/accounts/peertube' }
-      const result = await isJsonLDSignatureVerified(fromActor as any, signedBody)
+      const result = await compactJSONLDAndCheckSignature(fromActor as any, fakeExpressReq(signedBody), fakeExpressRes())
 
       expect(result).to.be.true
     })

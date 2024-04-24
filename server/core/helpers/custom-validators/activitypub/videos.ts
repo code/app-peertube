@@ -27,7 +27,7 @@ function sanitizeAndCheckVideoTorrentUpdateActivity (activity: any) {
     sanitizeAndCheckVideoTorrentObject(activity.object)
 }
 
-function sanitizeAndCheckVideoTorrentObject (video: any) {
+function sanitizeAndCheckVideoTorrentObject (video: VideoObject) {
   if (!video || video.type !== 'Video') return false
 
   if (!setValidRemoteTags(video)) {
@@ -57,6 +57,10 @@ function sanitizeAndCheckVideoTorrentObject (video: any) {
   if (!setValidStoryboard(video)) {
     logger.debug('Video has invalid preview (storyboard)', { video })
     return false
+  }
+
+  if (isUUIDValid(video.identifier) && !isUUIDValid(video.uuid)) {
+    video.uuid = video.identifier
   }
 
   // Default attributes

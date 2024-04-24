@@ -116,6 +116,8 @@ export interface ActivityView extends BaseActivity {
 
   // If sending a "viewer" event
   expires?: string
+  expiration?: string // FIXME: remove in 7.0, here for compat with < 6.1
+
   result?: {
     type: 'InteractionCounter'
     interactionType: 'WatchAction'

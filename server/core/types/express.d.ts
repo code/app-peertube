@@ -1,4 +1,4 @@
-import { HttpMethodType, PeerTubeProblemDocumentData, ServerLogLevel, VideoCreate } from '@peertube/peertube-models'
+import { Activity, HttpMethodType, PeerTubeProblemDocumentData, ServerLogLevel, VideoCreate } from '@peertube/peertube-models'
 import { RegisterServerAuthExternalOptions } from '@server/types/index.js'
 import {
   MAbuseMessage,
@@ -131,6 +131,8 @@ declare module 'express' {
       docUrl?: string
 
       ffprobe?: FfprobeData
+
+      bodyBeforeJSONLDCompaction: Activity
 
       videoAPI?: MVideoFormattableDetails
       videoAll?: MVideoFullLight

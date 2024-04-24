@@ -13,12 +13,15 @@ export interface VideoObject {
   id: string
   name: string
   duration: string
-  uuid: string
   tag: ActivityTagObject[]
   category: ActivityIdentifierObject
   licence: ActivityIdentifierObject
   language: ActivityIdentifierObject
   subtitleLanguage: ActivityIdentifierObject[]
+
+  // FIXME: remove identifier in the future, introduced for federation compatibility in 6.1
+  uuid?: string
+  identifier?: string
 
   views: number
 
